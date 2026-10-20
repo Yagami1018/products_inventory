@@ -10,14 +10,10 @@ public abstract class Product implements Sellable {
     private int stock;
 
     public Product(String code, String name, double basePrice, int stock) {
-        if (basePrice <= 0 || stock <= 0) {
-            String errType = basePrice <= 0 ? "Price" : "Stock";
-            throw new ArgumentException("Error: Invalid Argument, %s can't be 0 or negative.".formatted(errType));
-        }
-        this.code = code;
-        this.name = name;
-        this.basePrice = basePrice;
-        this.stock = stock;
+        setCode(code);
+        setName(name);
+        setBasePrice(basePrice);
+        setStock(stock);
     }
 
     public String getCode() {
@@ -48,7 +44,7 @@ public abstract class Product implements Sellable {
     }
 
     public void setBasePrice(double basePrice) {
-        if (basePrice <= 0) {
+        if (basePrice <= 0 || Double.isNaN(basePrice)) {
             throw new ArgumentException("Error: Invalid Argument, base price can't be 0 or negative");
         }
         this.basePrice = basePrice;
@@ -67,6 +63,8 @@ public abstract class Product implements Sellable {
 
     public abstract double calculateTaxes();
 
+    public abstract String getCategory();
+
     public double calculateFinalPrice() {
         return basePrice + calculateTaxes();
     }
@@ -77,7 +75,8 @@ public abstract class Product implements Sellable {
 
     @Override
     public String toString() {
-        return String.format("Type of Product: %s | Code: %s | Name: %s | Final Price: $%.2f | Quantity: %d",
+        return String.format(java.util.Locale.US,
+                "Type of Product: %s | Code: %s | Name: %s | Final Price: $%.2f | Quantity: %d",
                 this.getClass().getSimpleName(), code, name, calculateFinalPrice(), stock);
     }
 }

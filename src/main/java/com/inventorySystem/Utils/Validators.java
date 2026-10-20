@@ -1,20 +1,19 @@
 package com.inventorySystem.Utils;
 
-import java.util.Scanner;
-
 public class Validators {
 
-    private Validators() {}
+    private Validators() {
+    }
 
-    //Método para validar entrada de usuario, usado en los menús y submenús, para permitir la selección de un rango de opciones.
-    public static int validateOption(Scanner sc, String msg, int first, int last) {
-        System.out.print(msg);
+    // Método para validar entrada de usuario, usado en los menús y submenús, para
+    // permitir la selección de un rango de opciones.
+    public static int validateOption(String msg, int first, int last) {
         while (true) {
-            String input = sc.nextLine().trim();
+            String input = IO.readln(msg).trim();
             try {
                 int option = Integer.parseInt(input);
                 if (option >= first && option <= last) {
-                    System.out.println();
+                    IO.println();
                     return option;
                 } else {
                     throw new NumberFormatException();
@@ -23,6 +22,8 @@ public class Validators {
                 System.err.print(
                         "\"%s\" is invalid; input an option between %d and %d please: ".formatted(input, first,
                                 last));
+            } catch (Exception e) {
+                System.err.printf(java.util.Locale.US, "Error: Exception %s", e.getMessage());
             }
         }
     }
