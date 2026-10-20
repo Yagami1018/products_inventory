@@ -56,23 +56,40 @@ public class Inventory<T extends Product> {
         return products.values().stream().filter(T::isAvailable).sorted(compareByCode).toList();
     }
 
+    public Map<String, Integer> countProducts() {
+        return products.values().stream()
+                .collect(Collectors.groupingBy(T::getCategory, Collectors.summingInt(p -> p.getStock())));
+    }
+
+    public List<T> listLowStock() {
+        return products.values().stream().filter(p -> p.getStock() < 5).toList();
+    }
+
     public void showProducts() {
         Map<String, String> byCategory = products.values().stream().sorted(compareByCode)
                 .collect(Collectors.groupingBy(T::getCategory,
                         Collectors.mapping(T::toString, Collectors.joining("\n", "", "\n"))));
+        Map<String, Integer> byStock = countProducts();
+        int total = byStock.values().stream().reduce(0, (a, b) -> a + b);
 
         IO.println("""
                 === Inventory ===
 
-                Electronic Products:
+                %d Electronic Products:
                 %s
-                Cleaning Products:
+                %d Cleaning Products:
                 %s
-                Foods:
+                %d Foods:
                 %s
-                Clothes:
-                %s""".formatted(byCategory.getOrDefault("electronics", ""),
-                byCategory.getOrDefault("cleaning", ""),
-                byCategory.getOrDefault("foods", ""), byCategory.getOrDefault("clothes", "")));
+                %d Clothes:
+                %s
+                Total:
+                %d Products
+                """.formatted(
+                byStock.getOrDefault("electronics", 0), byCategory.getOrDefault("electronics", ""),
+                byStock.getOrDefault("cleaning", 0), byCategory.getOrDefault("cleaning", ""),
+                byStock.getOrDefault("foods", 0), byCategory.getOrDefault("foods", ""),
+                byStock.getOrDefault("clothes", 0), byCategory.getOrDefault("clothes", ""),
+                total));
     }
 }

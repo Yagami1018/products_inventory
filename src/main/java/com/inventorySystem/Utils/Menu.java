@@ -23,10 +23,11 @@ public class Menu {
                     3) Show inventory total value
                     4) Apply discounts
                     5) Show available only
-                    6) Exit
+                    6) Show low stock only
+                    7) Exit
                     """);
 
-            option = validateOption("Choose an option: ", 1, 6);
+            option = validateOption("Choose an option: ", 1, 7);
 
             switch (option) {
                 case 1 -> inventory.showProducts();
@@ -55,8 +56,13 @@ public class Menu {
                     inventory.listAvailables().forEach(IO::println);
                     IO.println();
                 }
+                case 6 -> {
+                    IO.println("=== Low Stock (below 5 units) ===");
+                    inventory.listLowStock().forEach(IO::println);
+                    IO.println();
+                }
             }
-        } while (option != 6);
+        } while (option != 7);
         IO.println("Thanks for your visit!!\n");
     }
 }
