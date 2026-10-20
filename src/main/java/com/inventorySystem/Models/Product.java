@@ -55,8 +55,8 @@ public abstract class Product implements Sellable {
     }
 
     public void setStock(int stock) {
-        if (stock <= 0) {
-            throw new ArgumentException("Error: Invalid Argument, stock can't be 0 or negative");
+        if (stock < 0) {
+            throw new ArgumentException("Error: Invalid Argument, stock can't be negative");
         }
         this.stock = stock;
     }

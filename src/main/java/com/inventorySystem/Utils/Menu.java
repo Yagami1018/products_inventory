@@ -42,9 +42,11 @@ public class Menu {
                             Electronics total value: $%.2f
                             Cleaning total value: $%.2f
                             Foods total value: $%.2f
+                            Clothes total value: $%.2f
                             Inventory total value: $%.2f.%n
                             """.formatted(vals.get("electronics"), vals.get("cleaning"),
                             vals.get("foods"),
+                            vals.get("clothes"),
                             vals.get("total")));
                 }
                 case 4 -> applyDiscounts(inventory.getProducts());

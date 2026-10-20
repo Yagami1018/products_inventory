@@ -9,9 +9,13 @@ import java.util.stream.Collectors;
 
 public class Inventory<T extends Product> {
     private Map<String, T> products;
-    /*Defino un comparator para reordenar en los métodos de salida que muestran los productos al usuario, esto debido 
-    a que hashmap no mantiene orden de inserción ni ordena alfabeticamente por defecto*/ 
-    private Comparator<T> compareByCode = (a,b) -> a.getCode().compareTo(b.getCode());
+    /*
+     * Defino un comparator para reordenar en los métodos de salida que muestran los
+     * productos al usuario, esto debido
+     * a que hashmap no mantiene orden de inserción ni ordena alfabeticamente por
+     * defecto
+     */
+    private Comparator<T> compareByCode = (a, b) -> a.getCode().compareTo(b.getCode());
 
     public Inventory() {
         products = new HashMap<>();
@@ -53,8 +57,9 @@ public class Inventory<T extends Product> {
     }
 
     public void showProducts() {
-        Map<String, String> byCategory = products.values().stream().sorted(compareByCode).collect(Collectors.groupingBy(T::getCategory,
-                Collectors.mapping(T::toString, Collectors.joining("\n", "", "\n"))));
+        Map<String, String> byCategory = products.values().stream().sorted(compareByCode)
+                .collect(Collectors.groupingBy(T::getCategory,
+                        Collectors.mapping(T::toString, Collectors.joining("\n", "", "\n"))));
 
         IO.println("""
                 === Inventory ===
@@ -64,8 +69,10 @@ public class Inventory<T extends Product> {
                 Cleaning Products:
                 %s
                 Foods:
+                %s
+                Clothes:
                 %s""".formatted(byCategory.getOrDefault("electronics", ""),
                 byCategory.getOrDefault("cleaning", ""),
-                byCategory.getOrDefault("foods", "")));
+                byCategory.getOrDefault("foods", ""), byCategory.getOrDefault("clothes", "")));
     }
 }

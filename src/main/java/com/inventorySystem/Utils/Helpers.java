@@ -9,8 +9,11 @@ import com.inventorySystem.Contracts.Discountable;
 import com.inventorySystem.Models.Inventory;
 import com.inventorySystem.Models.Product;
 import com.inventorySystem.Models.Products.CleaningProduct;
+import com.inventorySystem.Models.Products.Cloth;
 import com.inventorySystem.Models.Products.Electronic;
 import com.inventorySystem.Models.Products.Food;
+import com.inventorySystem.Models.Products.Cloth.SEASON;
+import com.inventorySystem.Models.Products.Cloth.SIZE;
 
 public class Helpers {
 
@@ -28,7 +31,10 @@ public class Helpers {
         Product soap = new CleaningProduct("C01", "Bath Soap", 5.00, 23, false);
         Product acetone = new CleaningProduct("C02", "Acetone", 6.00, 39, true);
 
-        inventory.addProducts(phone, tv, tomato, chicken, soap, acetone);
+        Product tshirt = new Cloth("L01", "T-Shirt", 11.00, 4, SIZE.M, SEASON.SUMMER);
+        Product coat = new Cloth("L02", "Winter Coat", 32.00, 0, SIZE.L, SEASON.WINTER);
+
+        inventory.addProducts(phone, tv, tomato, chicken, soap, acetone, tshirt, coat);
     }
 
     // Submenú para aplicar descuentos al tipo de productos que se desee.
@@ -38,10 +44,11 @@ public class Helpers {
                 1) Cleaning products
                 2) Electronic products
                 3) Food products
-                4) Back
+                4) Clothes products
+                5) Back
                 """);
-        int discountOption = validateOption("Products to discount: ", 1, 4);
-        if (discountOption == 4) {
+        int discountOption = validateOption("Products to discount: ", 1, 5);
+        if (discountOption == 5) {
             return;
         }
         int quantToDiscount = validateOption("Apply Discount in (1-99) percent: ", 1, 99);
@@ -49,6 +56,7 @@ public class Helpers {
             case 1 -> "cleaning";
             case 2 -> "electronics";
             case 3 -> "foods";
+            case 4 -> "clothes";
             default -> "";
         };
 
