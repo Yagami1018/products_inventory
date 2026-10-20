@@ -1,6 +1,7 @@
 package com.inventorySystem.Models.Products;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 import com.inventorySystem.Contracts.Discountable;
 import com.inventorySystem.Errors.ArgumentException;
@@ -19,8 +20,14 @@ public class Food extends Product implements Discountable {
     }
 
     public void setExpireDate(LocalDate expireDate) {
-        if (expireDate != null)
-            this.expireDate = expireDate;
+        if (expireDate == null) {
+            throw new ArgumentException("Error: Invalid argument, expiration date can't be null.");
+        }
+        int remainingDays = (int) ChronoUnit.DAYS.between(LocalDate.now(), expireDate);
+        if (remainingDays >= 0 && remainingDays < 3) {
+            applyDiscount(50);
+        }
+        this.expireDate = expireDate;
     }
 
     public boolean isExpired() {

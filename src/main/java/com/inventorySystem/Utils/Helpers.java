@@ -26,7 +26,7 @@ public class Helpers {
         Product tv = new Electronic("E02", "LG 41\"TV", 300.00, 31, 18);
 
         Product tomato = new Food("F01", "Tomato", 2.00, 400, LocalDate.now().plusDays(21));
-        Product chicken = new Food("F02", "Whole Raw Chicken", 10.00, 243, LocalDate.now().plusYears(1));
+        Product chicken = new Food("F02", "Whole Raw Chicken", 10.00, 243, LocalDate.now().plusDays(2));
 
         Product soap = new CleaningProduct("C01", "Bath Soap", 5.00, 23, false);
         Product acetone = new CleaningProduct("C02", "Acetone", 6.00, 39, true);
