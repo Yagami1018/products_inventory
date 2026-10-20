@@ -11,7 +11,7 @@ public class Food extends Product implements Discountable {
 
     public Food(String code, String name, double basePrice, int stock, LocalDate expireDate) {
         super(code, name, basePrice, stock);
-        this.expireDate = expireDate;
+        setExpireDate(expireDate);
     }
 
     public LocalDate getExpireDate() {
@@ -19,7 +19,17 @@ public class Food extends Product implements Discountable {
     }
 
     public void setExpireDate(LocalDate expireDate) {
-        this.expireDate = expireDate;
+        if (expireDate != null)
+            this.expireDate = expireDate;
+    }
+
+    public boolean isExpired() {
+        return LocalDate.now().isAfter(expireDate);
+    }
+
+    @Override
+    public String getCategory() {
+        return "foods";
     }
 
     @Override
@@ -38,7 +48,8 @@ public class Food extends Product implements Discountable {
 
     @Override
     public String toString() {
-        return String.format("%s | Expiration Date: %s", super.toString(), expireDate);
+        return String.format(java.util.Locale.US, "%s | Expiration Date: %s | Expired: %s", super.toString(),
+                expireDate, isExpired() ? "Yes" : "No");
     }
 
 }

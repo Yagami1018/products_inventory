@@ -20,6 +20,10 @@ public class CleaningProduct extends Product implements Discountable {
         this.isFlammable = isFlammable;
     }
 
+    public String getCategory() {
+        return "cleaning";
+    }
+
     @Override
     public void applyDiscount(double percent) {
         if (percent <= 0) {
@@ -36,7 +40,7 @@ public class CleaningProduct extends Product implements Discountable {
 
     @Override
     public String toString() {
-        return String.format("%s | Flammable: %s", super.toString(), isFlammable() ? "Yes" : "No");
+        return String.format(java.util.Locale.US, "%s | Flammable: %s", super.toString(), isFlammable() ? "Yes" : "No");
     }
 
 }

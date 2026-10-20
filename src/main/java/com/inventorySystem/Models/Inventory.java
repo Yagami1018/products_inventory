@@ -1,110 +1,62 @@
 package com.inventorySystem.Models;
 
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import com.inventorySystem.Models.Products.CleaningProduct;
-import com.inventorySystem.Models.Products.Electronic;
-import com.inventorySystem.Models.Products.Food;
+import java.util.stream.Collectors;
 
 public class Inventory<T extends Product> {
-    private List<T> products;
+    private Map<String, T> products;
+    /*Defino un comparator para reordenar en los métodos de salida que muestran los productos al usuario, esto debido 
+    a que hashmap no mantiene orden de inserción ni ordena alfabeticamente por defecto*/ 
+    private Comparator<T> compareByCode = (a,b) -> a.getCode().compareTo(b.getCode());
 
     public Inventory() {
-        products = new ArrayList<>();
+        products = new HashMap<>();
     }
 
-    public List<T> getProducts() {
+    public Map<String, T> getProducts() {
         return products;
     }
 
     public void addProduct(T product) {
-        products.add(product);
+        products.put(product.getCode(), product);
     }
 
     @SafeVarargs
     public final void addProducts(T... products) {
-        for (T prod : products) {
-            this.products.add(prod);
-        }
+        Arrays.stream(products).forEach(this::addProduct);
     }
 
     public boolean removeProduct(String code) {
-        for (T product : products) {
-            if (product.getCode().equals(code)) {
-                return products.remove(product);
-            }
-        }
-        return false;
+        return products.remove(code, products.get(code));
     }
 
     public T findByCode(String code) {
-        for (T product : products) {
-            if (product.getCode().equals(code)) {
-                return product;
-            }
-        }
-        return null;
+        return products.get(code);
     }
 
     public Map<String, Double> calculateInventoryTotalValue() {
-        Map<String, Double> values = new HashMap<>();
-        double electronicsVal = 0;
-        double cleaningVal = 0;
-        double foodsVal = 0;
-        for (T product : products) {
-            switch (product) {
-                case Electronic e:
-                    electronicsVal += e.calculateFinalPrice() * e.getStock();
-                    break;
-                case CleaningProduct cp:
-                    cleaningVal += cp.calculateFinalPrice() * cp.getStock();
-                    break;
-                case Food f:
-                    foodsVal += f.calculateFinalPrice() * f.getStock();
-                    break;
-                default:
-            }
-        }
-        values.put("electronics", electronicsVal);
-        values.put("cleaning", cleaningVal);
-        values.put("foods", foodsVal);
-        values.put("total", electronicsVal + cleaningVal + foodsVal);
+        Map<String, Double> values = products.values().stream().collect(Collectors.groupingBy(T::getCategory,
+                Collectors.summingDouble(p -> p.calculateFinalPrice() * p.getStock())));
+
+        double total = values.values().stream().reduce(0.0, (a, b) -> a + b);
+        values.put("total", total);
+
         return values;
     }
 
     public List<T> listAvailables() {
-        List<T> availables = new ArrayList<>();
-        for (T product : products) {
-            if (product.isAvailable()) {
-                availables.add(product);
-            }
-        }
-        return availables;
+        return products.values().stream().filter(T::isAvailable).sorted(compareByCode).toList();
     }
 
     public void showProducts() {
-        StringBuilder electronics = new StringBuilder();
-        StringBuilder cleaning = new StringBuilder();
-        StringBuilder foods = new StringBuilder();
+        Map<String, String> byCategory = products.values().stream().sorted(compareByCode).collect(Collectors.groupingBy(T::getCategory,
+                Collectors.mapping(T::toString, Collectors.joining("\n", "", "\n"))));
 
-        for (T prod : products) {
-            switch (prod) {
-                case Electronic e:
-                    electronics.append(e).append("\n");
-                    break;
-                case Food f:
-                    foods.append(f).append("\n");
-                    break;
-                case CleaningProduct cp:
-                    cleaning.append(cp).append("\n");
-                    break;
-                default:
-            }
-        }
-
-        System.out.println("""
+        IO.println("""
                 === Inventory ===
 
                 Electronic Products:
@@ -112,6 +64,8 @@ public class Inventory<T extends Product> {
                 Cleaning Products:
                 %s
                 Foods:
-                %s""".formatted(electronics.toString(), cleaning.toString(), foods.toString()));
+                %s""".formatted(byCategory.getOrDefault("electronics", ""),
+                byCategory.getOrDefault("cleaning", ""),
+                byCategory.getOrDefault("foods", "")));
     }
 }
